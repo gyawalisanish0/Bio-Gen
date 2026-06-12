@@ -1,11 +1,30 @@
+import { useCallback, useState } from "react";
 import "./styles.css";
 import { ControlPanel } from "./components/ControlPanel";
 import { SimulationCanvas } from "./components/SimulationCanvas";
+import { StartMenu } from "./components/StartMenu";
 import { StatsPanel } from "./components/StatsPanel";
 import { useSimulation } from "./hooks/useSimulation";
+import type { SimulationConfig } from "./types";
+
+type View = "menu" | "simulation";
 
 function App() {
-  const { state, statsHistory, connected, start, pause, step, reset } = useSimulation();
+  const { state, statsHistory, connected, start, pause, step, reset, setSpeed, launch } = useSimulation();
+  const [view, setView] = useState<View>("menu");
+
+  const handleLaunch = useCallback(
+    async (config: SimulationConfig) => {
+      await launch(config);
+      setView("simulation");
+    },
+    [launch],
+  );
+
+  const handleNewSimulation = useCallback(async () => {
+    await pause();
+    setView("menu");
+  }, [pause]);
 
   return (
     <div className="app">
@@ -17,16 +36,28 @@ function App() {
         </span>
       </header>
 
-      <main className="app-main">
-        <section className="canvas-section">
-          <SimulationCanvas state={state} />
-        </section>
+      {view === "menu" ? (
+        <StartMenu onLaunch={handleLaunch} />
+      ) : (
+        <main className="app-main">
+          <section className="canvas-section">
+            <SimulationCanvas state={state} />
+          </section>
 
-        <aside className="sidebar">
-          <ControlPanel state={state} onStart={start} onPause={pause} onStep={step} onReset={reset} />
-          <StatsPanel history={statsHistory} />
-        </aside>
-      </main>
+          <aside className="sidebar">
+            <ControlPanel
+              state={state}
+              onStart={start}
+              onPause={pause}
+              onStep={step}
+              onReset={reset}
+              onSpeedChange={setSpeed}
+              onNewSimulation={handleNewSimulation}
+            />
+            <StatsPanel history={statsHistory} />
+          </aside>
+        </main>
+      )}
     </div>
   );
 }

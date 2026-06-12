@@ -9,7 +9,7 @@ from dataclasses import asdict
 
 from fastapi import WebSocket
 
-from app.config import DEFAULT_TICK_INTERVAL_MS
+from app.config import DEFAULT_TICK_INTERVAL_MS, MAX_TICK_INTERVAL_MS, MIN_TICK_INTERVAL_MS
 from app.models import (
     GenomeSchema,
     OrganismSchema,
@@ -32,13 +32,23 @@ class SimulationManager:
 
     # --- lifecycle ---------------------------------------------------
     def reset(self, config: SimulationConfigSchema | None = None) -> WorldStateSchema:
-        sim_config = SimulationConfig(**config.model_dump()) if config else None
+        sim_config = None
+        if config:
+            sim_config = SimulationConfig(
+                population_size=config.population_size,
+                mutation_rate=config.mutation_rate,
+                food_regen_multiplier=config.food_regen_multiplier,
+            )
+            self.set_tick_interval(config.tick_interval_ms)
         self.engine.reset(sim_config)
         return self.get_state()
 
     def step(self) -> WorldStateSchema:
         self.engine.step()
         return self.get_state()
+
+    def set_tick_interval(self, tick_interval_ms: int) -> None:
+        self.tick_interval_ms = max(MIN_TICK_INTERVAL_MS, min(MAX_TICK_INTERVAL_MS, tick_interval_ms))
 
     async def start(self) -> None:
         if self.running:
@@ -112,6 +122,7 @@ class SimulationManager:
             organisms=organisms,
             stats=StatsSnapshotSchema(**asdict(stats)),
             running=self.running,
+            tick_interval_ms=self.tick_interval_ms,
         )
 
     def get_stats_history(self) -> StatsHistorySchema:

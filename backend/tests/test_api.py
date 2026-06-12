@@ -33,9 +33,23 @@ def test_step_advances_tick():
 
 
 def test_reset_with_custom_population():
-    response = client.post("/api/simulation/reset", json={"population_size": 5, "mutation_rate": 0.1, "food_regen_multiplier": 1.0})
+    response = client.post(
+        "/api/simulation/reset",
+        json={"population_size": 5, "mutation_rate": 0.1, "food_regen_multiplier": 1.0, "tick_interval_ms": 100},
+    )
     assert response.status_code == 200
 
     data = response.json()
     assert data["tick"] == 0
     assert len(data["organisms"]) == 5
+    assert data["tick_interval_ms"] == 100
+
+
+def test_set_speed_clamps_to_bounds():
+    response = client.post("/api/simulation/speed", json={"tick_interval_ms": 5})
+    assert response.status_code == 200
+    assert response.json()["tick_interval_ms"] == 50
+
+    response = client.post("/api/simulation/speed", json={"tick_interval_ms": 5000})
+    assert response.status_code == 200
+    assert response.json()["tick_interval_ms"] == 1000

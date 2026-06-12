@@ -45,10 +45,12 @@ export interface WorldState {
   organisms: Organism[];
   stats: StatsSnapshot;
   running: boolean;
+  tick_interval_ms: number;
 }
 
 export interface SimulationConfig {
   population_size: number;
   mutation_rate: number;
   food_regen_multiplier: number;
+  tick_interval_ms: number;
 }

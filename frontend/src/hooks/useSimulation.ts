@@ -13,6 +13,8 @@ interface UseSimulation {
   pause: () => Promise<void>;
   step: () => Promise<void>;
   reset: (config: SimulationConfig) => Promise<void>;
+  setSpeed: (tickIntervalMs: number) => Promise<void>;
+  launch: (config: SimulationConfig) => Promise<void>;
 }
 
 export function useSimulation(): UseSimulation {
@@ -53,19 +55,36 @@ export function useSimulation(): UseSimulation {
     applyState(await res.json());
   }, [applyState]);
 
-  const reset = useCallback(
-    async (config: SimulationConfig) => {
-      const res = await fetch(`${API_BASE}/api/simulation/reset`, {
+  const reset = useCallback(async (config: SimulationConfig) => {
+    const res = await fetch(`${API_BASE}/api/simulation/reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    });
+    const data: WorldState = await res.json();
+    setState(data);
+    setStatsHistory([data.stats]);
+  }, []);
+
+  const setSpeed = useCallback(
+    async (tickIntervalMs: number) => {
+      const res = await fetch(`${API_BASE}/api/simulation/speed`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(config),
+        body: JSON.stringify({ tick_interval_ms: tickIntervalMs }),
       });
-      const data: WorldState = await res.json();
-      setState(data);
-      setStatsHistory([data.stats]);
+      applyState(await res.json());
     },
-    [],
+    [applyState],
   );
 
-  return { state, statsHistory, connected, start, pause, step, reset };
+  const launch = useCallback(
+    async (config: SimulationConfig) => {
+      await reset(config);
+      await start();
+    },
+    [reset, start],
+  );
+
+  return { state, statsHistory, connected, start, pause, step, reset, setSpeed, launch };
 }

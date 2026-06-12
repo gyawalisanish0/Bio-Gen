@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from app.config import DEFAULT_FOOD_REGEN_MULTIPLIER, DEFAULT_MUTATION_RATE, DEFAULT_POPULATION_SIZE
+from app.config import (
+    DEFAULT_FOOD_REGEN_MULTIPLIER,
+    DEFAULT_MUTATION_RATE,
+    DEFAULT_POPULATION_SIZE,
+    DEFAULT_TICK_INTERVAL_MS,
+)
 
 
 class GenomeSchema(BaseModel):
@@ -52,12 +57,18 @@ class WorldStateSchema(BaseModel):
     organisms: list[OrganismSchema]
     stats: StatsSnapshotSchema
     running: bool
+    tick_interval_ms: int
 
 
 class SimulationConfigSchema(BaseModel):
     population_size: int = DEFAULT_POPULATION_SIZE
     mutation_rate: float = DEFAULT_MUTATION_RATE
     food_regen_multiplier: float = DEFAULT_FOOD_REGEN_MULTIPLIER
+    tick_interval_ms: int = DEFAULT_TICK_INTERVAL_MS
+
+
+class SpeedSchema(BaseModel):
+    tick_interval_ms: int
 
 
 class StatsHistorySchema(BaseModel):

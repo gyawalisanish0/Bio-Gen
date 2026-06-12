@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.manager import manager
-from app.models import SimulationConfigSchema, StatsHistorySchema, WorldStateSchema
+from app.models import SimulationConfigSchema, SpeedSchema, StatsHistorySchema, WorldStateSchema
 
 router = APIRouter(prefix="/api/simulation", tags=["simulation"])
 
@@ -41,3 +41,9 @@ async def start_simulation() -> dict[str, bool]:
 async def pause_simulation() -> dict[str, bool]:
     await manager.pause()
     return {"running": manager.running}
+
+
+@router.post("/speed", response_model=WorldStateSchema)
+def set_speed(speed: SpeedSchema) -> WorldStateSchema:
+    manager.set_tick_interval(speed.tick_interval_ms)
+    return manager.get_state()

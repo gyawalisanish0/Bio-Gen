@@ -52,6 +52,50 @@ body {
   padding: 1.5rem;
 }
 
+.start-menu {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.start-menu-card {
+  max-width: 480px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.start-menu-card h2 {
+  margin-top: 0;
+}
+
+.start-menu-card p {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.launch-button {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.launch-button:hover {
+  background: #1d4ed8;
+}
+
 .canvas-section {
   flex: 2 1 480px;
   display: flex;
@@ -150,4 +194,14 @@ body {
   margin: 1rem 0 0.5rem;
   font-size: 0.9rem;
   color: #374151;
+}
+
+.new-simulation-button {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  cursor: pointer;
 }
