@@ -9,11 +9,12 @@ from dataclasses import asdict
 
 from fastapi import WebSocket
 
-from app.config import DEFAULT_TICK_INTERVAL_MS, MAX_TICK_INTERVAL_MS, MIN_TICK_INTERVAL_MS
+from app.config import DEFAULT_TICK_INTERVAL_MS, MAX_TICK_INTERVAL_MS, MIN_TICK_INTERVAL_MS, SPECIES_SHAPES
 from app.models import (
     GenomeSchema,
     OrganismSchema,
     SimulationConfigSchema,
+    SpeciesSchema,
     StatsHistorySchema,
     StatsSnapshotSchema,
     TileSchema,
@@ -109,9 +110,14 @@ class SimulationManager:
                 energy=round(o.energy, 2),
                 age=o.age,
                 generation=o.generation,
+                species_id=o.species_id,
                 genome=GenomeSchema(**o.genome.to_dict()),
             )
             for o in engine.organisms
+        ]
+        species = [
+            SpeciesSchema(id=i, shape=SPECIES_SHAPES[i], hue=engine.species_hues[i])
+            for i in range(len(SPECIES_SHAPES))
         ]
         stats = engine.stats_history[-1]
         return WorldStateSchema(
@@ -120,6 +126,7 @@ class SimulationManager:
             height=engine.world.height,
             tiles=tiles,
             organisms=organisms,
+            species=species,
             stats=StatsSnapshotSchema(**asdict(stats)),
             running=self.running,
             tick_interval_ms=self.tick_interval_ms,

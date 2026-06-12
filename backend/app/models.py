@@ -27,6 +27,7 @@ class OrganismSchema(BaseModel):
     energy: float
     age: int
     generation: int
+    species_id: int
     genome: GenomeSchema
 
 
@@ -36,6 +37,12 @@ class TileSchema(BaseModel):
     terrain: str
     food: float
     max_food: float
+
+
+class SpeciesSchema(BaseModel):
+    id: int
+    shape: str
+    hue: int
 
 
 class StatsSnapshotSchema(BaseModel):
@@ -55,6 +62,7 @@ class WorldStateSchema(BaseModel):
     height: int
     tiles: list[TileSchema]
     organisms: list[OrganismSchema]
+    species: list[SpeciesSchema]
     stats: StatsSnapshotSchema
     running: bool
     tick_interval_ms: int

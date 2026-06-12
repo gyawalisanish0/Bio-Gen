@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { WorldState } from "../types";
 import { TRAIT_BOUNDS } from "../traits";
+import { polygonPoints } from "../shapes";
 
 const TERRAIN_COLORS: Record<string, string> = {
   plains: "#cfe8a3",
@@ -70,15 +71,11 @@ function drawGrid(ctx: CanvasRenderingContext2D, state: WorldState) {
 }
 
 function drawOrganisms(ctx: CanvasRenderingContext2D, state: WorldState) {
-  const [speedMin, speedMax] = TRAIT_BOUNDS.speed;
   const [sizeMin, sizeMax] = TRAIT_BOUNDS.size;
 
   for (const organism of state.organisms) {
-    const { speed, size } = organism.genome;
-
-    // Hue maps slow -> fast as blue -> red.
-    const speedRatio = (speed - speedMin) / (speedMax - speedMin);
-    const hue = 240 - speedRatio * 240;
+    const { size } = organism.genome;
+    const species = state.species[organism.species_id];
 
     // Radius maps small -> large traits onto a visible range.
     const sizeRatio = (size - sizeMin) / (sizeMax - sizeMin);
@@ -87,9 +84,20 @@ function drawOrganisms(ctx: CanvasRenderingContext2D, state: WorldState) {
     const cx = organism.x * CELL_SIZE + CELL_SIZE / 2;
     const cy = organism.y * CELL_SIZE + CELL_SIZE / 2;
 
+    const hue = species?.hue ?? 0;
+    const points = species ? polygonPoints(species.shape, cx, cy, radius) : null;
+
     ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
+    if (points) {
+      ctx.moveTo(points[0][0], points[0][1]);
+      for (const [px, py] of points.slice(1)) {
+        ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    } else {
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    }
+    ctx.fillStyle = `hsl(${hue}, 75%, 50%)`;
     ctx.fill();
     ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
     ctx.stroke();

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import "./styles.css";
 import { ControlPanel } from "./components/ControlPanel";
 import { SimulationCanvas } from "./components/SimulationCanvas";
+import { SpeciesLegend } from "./components/SpeciesLegend";
 import { StartMenu } from "./components/StartMenu";
 import { StatsPanel } from "./components/StatsPanel";
 import { useSimulation } from "./hooks/useSimulation";
@@ -54,6 +55,7 @@ function App() {
               onSpeedChange={setSpeed}
               onNewSimulation={handleNewSimulation}
             />
+            <SpeciesLegend species={state?.species ?? []} />
             <StatsPanel history={statsHistory} />
           </aside>
         </main>

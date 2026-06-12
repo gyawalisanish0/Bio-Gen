@@ -25,7 +25,15 @@ _id_counter = itertools.count(1)
 class Organism:
     """A single creature living on the grid, driven entirely by its genome."""
 
-    def __init__(self, x: int, y: int, genome: Genome, energy: float = STARTING_ENERGY, generation: int = 0):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        genome: Genome,
+        energy: float = STARTING_ENERGY,
+        generation: int = 0,
+        species_id: int = 0,
+    ):
         self.id = next(_id_counter)
         self.x = x
         self.y = y
@@ -33,6 +41,7 @@ class Organism:
         self.energy = energy
         self.age = 0
         self.generation = generation
+        self.species_id = species_id
         self.alive = True
 
     @property
@@ -92,7 +101,14 @@ class Organism:
         child_energy = self.reproduction_threshold * CHILD_STARTING_ENERGY_FRACTION
         self.energy -= cost
         child_genome = self.genome.mutate(mutation_rate)
-        return Organism(self.x, self.y, child_genome, energy=child_energy, generation=self.generation + 1)
+        return Organism(
+            self.x,
+            self.y,
+            child_genome,
+            energy=child_energy,
+            generation=self.generation + 1,
+            species_id=self.species_id,
+        )
 
 
 def _distance(a: tuple[int, int], b: tuple[int, int]) -> int:

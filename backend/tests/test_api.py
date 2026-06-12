@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from app.config import SPECIES_SHAPES
 from app.main import app
 
 client = TestClient(app)
@@ -20,6 +21,15 @@ def test_get_state_returns_world_and_organisms():
     assert data["height"] == 16
     assert len(data["tiles"]) == 16 * 16
     assert len(data["organisms"]) > 0
+
+    assert len(data["species"]) == len(SPECIES_SHAPES)
+    for species in data["species"]:
+        assert species["shape"] in SPECIES_SHAPES
+        assert 0 <= species["hue"] < 360
+
+    valid_species_ids = {s["id"] for s in data["species"]}
+    for organism in data["organisms"]:
+        assert organism["species_id"] in valid_species_ids
 
 
 def test_step_advances_tick():

@@ -58,3 +58,9 @@ DEFAULT_TICK_INTERVAL_MS = 200
 MIN_TICK_INTERVAL_MS = 50
 MAX_TICK_INTERVAL_MS = 1000
 STATS_HISTORY_LIMIT = 500
+
+# Species are purely visual/lineage markers: a shape + colour assigned at
+# spawn (and inherited by offspring) so distinct lineages are easy to tell
+# apart on screen. They have no effect on genome traits or survival.
+SPECIES_SHAPES = ["circle", "triangle", "square", "pentagon", "hexagon", "diamond"]
+SPECIES_COUNT = len(SPECIES_SHAPES)

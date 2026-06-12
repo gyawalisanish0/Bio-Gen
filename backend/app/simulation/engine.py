@@ -10,6 +10,7 @@ from app.config import (
     DEFAULT_FOOD_REGEN_MULTIPLIER,
     DEFAULT_MUTATION_RATE,
     DEFAULT_POPULATION_SIZE,
+    SPECIES_COUNT,
     STATS_HISTORY_LIMIT,
     WORLD_HEIGHT,
     WORLD_WIDTH,
@@ -47,6 +48,7 @@ class SimulationEngine:
         self.world = World(WORLD_WIDTH, WORLD_HEIGHT, self.config.food_regen_multiplier)
         self.organisms: list[Organism] = []
         self.stats_history: list[StatsSnapshot] = []
+        self.species_hues = _generate_species_hues()
         self._spawn_initial_population()
         self._record_stats()
 
@@ -56,13 +58,15 @@ class SimulationEngine:
         self.world = World(WORLD_WIDTH, WORLD_HEIGHT, self.config.food_regen_multiplier)
         self.organisms = []
         self.stats_history = []
+        self.species_hues = _generate_species_hues()
         self._spawn_initial_population()
         self._record_stats()
 
     def _spawn_initial_population(self) -> None:
         for _ in range(self.config.population_size):
             x, y = self._random_passable_tile()
-            self.organisms.append(Organism(x, y, Genome.random()))
+            species_id = random.randrange(SPECIES_COUNT)
+            self.organisms.append(Organism(x, y, Genome.random(), species_id=species_id))
 
     def _random_passable_tile(self) -> tuple[int, int]:
         while True:
@@ -110,3 +114,10 @@ class SimulationEngine:
 def _avg(values: Iterable[float]) -> float:
     values = list(values)
     return sum(values) / len(values)
+
+
+def _generate_species_hues() -> list[int]:
+    """Evenly-spaced hues shuffled into a random order, one per species."""
+    hues = [round(i * 360 / SPECIES_COUNT) for i in range(SPECIES_COUNT)]
+    random.shuffle(hues)
+    return hues

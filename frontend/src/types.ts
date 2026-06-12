@@ -1,3 +1,5 @@
+import type { ShapeName } from "./shapes";
+
 export type Terrain = "plains" | "forest" | "desert" | "water";
 
 export interface Genome {
@@ -15,7 +17,14 @@ export interface Organism {
   energy: number;
   age: number;
   generation: number;
+  species_id: number;
   genome: Genome;
+}
+
+export interface Species {
+  id: number;
+  shape: ShapeName;
+  hue: number;
 }
 
 export interface Tile {
@@ -43,6 +52,7 @@ export interface WorldState {
   height: number;
   tiles: Tile[];
   organisms: Organism[];
+  species: Species[];
   stats: StatsSnapshot;
   running: boolean;
   tick_interval_ms: number;

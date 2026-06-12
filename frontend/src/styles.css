@@ -196,6 +196,33 @@ body {
   color: #374151;
 }
 
+.species-legend {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.species-legend h3 {
+  margin: 0 0 0.5rem;
+}
+
+.species-legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.species-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
 .new-simulation-button {
   width: 100%;
   margin-top: 0.5rem;
