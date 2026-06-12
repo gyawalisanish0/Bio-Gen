@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SimulationConfig, StatsSnapshot, WorldState } from "../types";
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 const WS_URL = `${API_BASE.replace(/^http/, "ws")}/ws/simulation`;
 const STATS_HISTORY_LIMIT = 200;
 
