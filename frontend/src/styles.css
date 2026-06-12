@@ -3,6 +3,10 @@
   color-scheme: light;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   background: #f4f6f3;
@@ -16,18 +20,34 @@ body {
 }
 
 .app-header {
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
   background: #1f2933;
   color: #f4f6f3;
 }
 
 .app-header h1 {
   margin: 0 0 0.25rem;
+  font-size: 1.4rem;
 }
 
 .app-header p {
   margin: 0;
   opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 600px) {
+  .app-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .app-header p {
+    font-size: 1rem;
+  }
 }
 
 .status {
@@ -46,10 +66,20 @@ body {
 
 .app-main {
   display: flex;
+  flex-direction: column;
   flex: 1;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  padding: 1.5rem;
+  gap: 1rem;
+  padding: 1rem;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .app-main {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
 }
 
 .start-menu {
@@ -57,7 +87,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 600px) {
+  .start-menu {
+    padding: 2rem 1.5rem;
+  }
 }
 
 .start-menu-card {
@@ -66,7 +102,13 @@ body {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1.25rem;
+}
+
+@media (min-width: 600px) {
+  .start-menu-card {
+    padding: 1.5rem;
+  }
 }
 
 .start-menu-card h2 {
@@ -97,16 +139,26 @@ body {
 }
 
 .canvas-section {
-  flex: 2 1 480px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .canvas-section {
+    flex: 2 1 480px;
+  }
 }
 
 .simulation-canvas {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
   border: 1px solid #c4ccd4;
   border-radius: 4px;
-  max-width: 100%;
   image-rendering: pixelated;
 }
 
@@ -116,10 +168,19 @@ body {
 }
 
 .sidebar {
-  flex: 1 1 320px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .sidebar {
+    flex: 1 1 320px;
+    width: auto;
+    gap: 1.5rem;
+  }
 }
 
 .control-panel,

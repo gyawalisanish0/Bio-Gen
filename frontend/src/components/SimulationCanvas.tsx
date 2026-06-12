@@ -25,8 +25,12 @@ export function SimulationCanvas({ state }: Props) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    canvas.width = state.width * CELL_SIZE;
-    canvas.height = state.height * CELL_SIZE;
+    // Render at device-pixel resolution for crisp output on high-DPI
+    // screens, while CSS keeps the element scaled to fit its container.
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = state.width * CELL_SIZE * dpr;
+    canvas.height = state.height * CELL_SIZE * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     drawTiles(ctx, state);
     drawGrid(ctx, state);
@@ -37,7 +41,13 @@ export function SimulationCanvas({ state }: Props) {
     return <div className="canvas-placeholder">Connecting to simulation…</div>;
   }
 
-  return <canvas ref={canvasRef} className="simulation-canvas" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="simulation-canvas"
+      style={{ aspectRatio: `${state.width} / ${state.height}` }}
+    />
+  );
 }
 
 function drawTiles(ctx: CanvasRenderingContext2D, state: WorldState) {
