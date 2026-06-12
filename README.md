@@ -98,6 +98,26 @@ npm run dev
 By default the frontend talks to `http://localhost:8000`. To point it at a
 different backend, copy `.env.example` to `.env` and set `VITE_API_BASE`.
 
+## Docker
+
+Each service has its own `Dockerfile`:
+
+```bash
+# Backend - serves the API on :8000
+docker build -t evosim-backend ./backend
+docker run -p 8000:8000 evosim-backend
+
+# Frontend - builds the static site and serves it with nginx on :80
+# VITE_API_BASE is baked in at build time, so point it at your backend's URL.
+docker build -t evosim-frontend --build-arg VITE_API_BASE=http://localhost:8000 ./frontend
+docker run -p 8080:80 evosim-frontend
+```
+
+On every push to `main`, `.github/workflows/docker-publish.yml` builds both
+images and publishes them to GitHub Container Registry as
+`ghcr.io/<owner>/<repo>-backend` and `ghcr.io/<owner>/<repo>-frontend`,
+tagged `latest` and with the commit SHA.
+
 ## API overview
 
 | Method | Path                       | Description |
