@@ -98,6 +98,37 @@ npm run dev
 By default the frontend talks to `http://localhost:8000`. To point it at a
 different backend, copy `.env.example` to `.env` and set `VITE_API_BASE`.
 
+## Backend hosting (Render)
+
+`render.yaml` is a [Render Blueprint](https://render.com/docs/infrastructure-as-code)
+that builds `backend/Dockerfile` as a free web service. To deploy:
+
+1. In the [Render dashboard](https://dashboard.render.com/), choose
+   **New → Blueprint** and connect this repo. Render detects `render.yaml`
+   and creates the `evosim-backend` service (free plan).
+2. Once deployed, copy the service's public URL (e.g.
+   `https://evosim-backend.onrender.com`).
+
+Note: Render's free tier spins the service down after 15 minutes of
+inactivity, so the first request (and any open WebSocket) after idling takes
+30-60 seconds to wake back up.
+
+## GitHub Pages
+
+`.github/workflows/deploy-pages.yml` builds the frontend and deploys it to
+GitHub Pages on every push to `main` (and can be run manually from the
+Actions tab). One-time setup:
+
+1. In the repo's **Settings → Pages**, set "Source" to **GitHub Actions**.
+2. The backend (FastAPI + WebSocket) isn't static and can't run on Pages, so
+   host it separately (e.g. on Render, above) and set a repository
+   **variable** named `VITE_API_BASE` (Settings → Secrets and variables →
+   Actions → Variables) to its public URL. Without this, the deployed page
+   falls back to `http://localhost:8000` and shows "disconnected".
+
+The site is served from `/Bio-Gen/`, so the workflow builds with
+`vite build --base=/Bio-Gen/`.
+
 ## Docker
 
 Each service has its own `Dockerfile`:
